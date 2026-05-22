@@ -7,7 +7,7 @@ def exercise3_metric_1():
     ex3_metric1 = ex3.late_orders_per_city()
     st.title(f'Análisis de retrasos en pedidos\n' +
                 '## Ejercicio 1\n - Número de pedidos que llegan tarde por ciudad')
-    st.bar_chart(ex3_metric1, x='Ciudad', y='Cantidad Pedidos')
+    st.bar_chart(ex3_metric1, x='Ciudad (Estado)', y='Cantidad Pedidos')
 
 def exercise3_metric_2():
 
@@ -29,12 +29,12 @@ def exercise3_metric_2():
 
     #ax.axis('equal')
     #st.pyplot(fig)
-    st.bar_chart(ex3_metric2, x='Ciudad', y='Porcentaje')
+    st.bar_chart(ex3_metric2, x='Ciudad (Estado)', y='Porcentaje')
 
 def exercise3_metric_3():
     ex3_metric3 = ex3.late_orders_days_mean()
     st.markdown(f'## Ejercicio 3\n - Tiempo medio de retraso en días')
-    st.bar_chart(ex3_metric3, x='Ciudad', y='Media Dias de Retraso')
+    st.bar_chart(ex3_metric3, x='Ciudad (Estado)', y='Media Dias de Retraso')
     
 
 
