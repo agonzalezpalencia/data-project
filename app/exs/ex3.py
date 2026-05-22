@@ -2,6 +2,51 @@ import numpy as np
 import pandas as pd
 from seeders import load_data as data
 
+def obtain_carrier_customer_days():
+    time_days = obtain_late_orders_days()
+
+    time_days['order_delivered_carrier_date'] = pd.to_datetime(time_days['order_delivered_carrier_date'])
+    time_days['order_purchase_timestamp'] = pd.to_datetime(time_days['order_purchase_timestamp'])
+
+    time_days['mean_purchase_carrier'] = (time_days['order_delivered_carrier_date'] - time_days['order_purchase_timestamp']).dt.days
+    time_days['mean_carrier_customer'] = (time_days['order_delivered_customer_date'] - time_days['order_delivered_carrier_date']).dt.days
+
+    return time_days
+
+def obtain_late_orders_count():
+
+    time_days = obtain_late_orders_days()
+    orders_reviews = data.order_review()
+
+    df_late_orders_reviews = pd.merge(time_days, orders_reviews, on='order_id', how='left')
+
+    bins = [0,2,5,10,20, int(df_late_orders_reviews['late_days'].max())]
+    labels = ['0 a 2 dias', '2 a 5 dias', '5 a 10 dias', '10 a 20 dias', '20+ dias']
+
+    df_late_orders_reviews['range'] = pd.cut(df_late_orders_reviews['late_days'], bins=bins, labels=labels)
+
+    df_late_orders_count_ranges = df_late_orders_reviews.groupby('range', observed=True).size().reset_index().rename(columns={ 0 : 'count'})
+
+    return df_late_orders_count_ranges
+
+
+def obtain_late_orders_rating():
+
+    time_days = obtain_late_orders_days()
+    orders_reviews = data.order_review()
+
+    df_late_orders_reviews = pd.merge(time_days, orders_reviews, on='order_id', how='left')
+
+    bins = [0,2,5,10,20, int(df_late_orders_reviews['late_days'].max())]
+    labels = ['0 a 2 dias', '2 a 5 dias', '5 a 10 dias', '10 a 20 dias', '20+ dias']
+
+    df_late_orders_reviews['range'] = pd.cut(df_late_orders_reviews['late_days'], bins=bins, labels=labels)
+
+    df_late_orders_rating_ranges = round(df_late_orders_reviews.groupby('range', observed=True)['review_score'].mean(), 2).reset_index()
+
+    return df_late_orders_rating_ranges
+
+
 def obtain_late_orders_per_city():
 
     orders = data.orders().copy()
@@ -47,14 +92,21 @@ def late_orders_percentage():
     df_orders_percentage['percentage'] = round((df_orders_percentage['total_late_orders'] / 
                                       df_orders_percentage['total_orders']) * 100, 2)
 
-    return df_orders_percentage.sort_values(by='percentage', ascending=[False]).reset_index().rename(columns={'customer_city' : 'Ciudad', 'percentage' : 'Porcentaje'}).head(n=50)
+    return df_orders_percentage.sort_values(by='total_late_orders', ascending=[False]).reset_index().rename(columns={'customer_city' : 'Ciudad', 'percentage' : 'Porcentaje'}).head(n=25)
+
+def obtain_late_orders_days():
+    df_time_days = obtain_late_orders_per_city().copy()
+    df_time_days['order_delivered_customer_date'] = pd.to_datetime(df_time_days['order_delivered_customer_date'])
+    df_time_days['order_estimated_delivery_date'] = pd.to_datetime(df_time_days['order_estimated_delivery_date'])
+
+    df_time_days['late_days'] = (df_time_days['order_delivered_customer_date'] - df_time_days['order_estimated_delivery_date']).dt.days
+
+    return df_time_days
+
+
 
 def late_orders_days_mean():
 
-    df_mean_time_days = obtain_late_orders_per_city().copy()
-    df_mean_time_days['order_delivered_customer_date'] = df_mean_time_days['order_delivered_customer_date'].astype('date64[pyarrow]')
-    df_mean_time_days['order_estimated_delivery_date'] = df_mean_time_days['order_estimated_delivery_date'].astype('date64[pyarrow]')
+    df_mean_time_days = obtain_late_orders_days()
 
-    df_mean_time_days['late_days'] = (df_mean_time_days['order_delivered_customer_date'] - df_mean_time_days['order_estimated_delivery_date']).dt.days
-
-    return df_mean_time_days.groupby('customer_city')['late_days'].mean().sort_values(ascending=False).to_frame()
+    return df_mean_time_days.groupby('customer_city')['late_days'].mean().sort_values(ascending=False).to_frame().reset_index().rename(columns={'customer_city' : 'Ciudad', 'late_days' : 'Media Dias de Retraso'}).head(n=25)
