@@ -23,7 +23,7 @@ def get_raw_reviews_state_customer():
     
     return raw_df_reviews_state_customer
 
-def reviews_count_per_state():
+def get_reviews_count_per_state():
 
     raw_df = get_raw_reviews_state_customer() 
 
@@ -31,8 +31,57 @@ def reviews_count_per_state():
     df_reviews_state_customer = raw_df.groupby(['state_city', 'order_status']).size().to_frame().reset_index().rename(
         columns={'state_city' : 'Ciudad (Estado)', 
                  'order_status' : 'Estado', 
-                0 : 'Cant. Pedidos'}).sort_values(
-                     by='Cant. Pedidos', 
+                 0 : 'Cantidad Reviews'}).sort_values(
+                     by='Cantidad Reviews', 
                      ascending=False)
     
     return df_reviews_state_customer
+
+
+def delivered_reviews_count_per_state():
+
+    delivered_reviews_count_per_state = get_reviews_count_per_state()
+    
+    return delivered_reviews_count_per_state[delivered_reviews_count_per_state['Estado'] == 'delivered'].reset_index().head(n=25)
+
+
+def canceled_reviews_count_per_state():
+
+    canceled_reviews_count_per_state = get_reviews_count_per_state()
+    
+    return canceled_reviews_count_per_state[canceled_reviews_count_per_state['Estado'] == 'canceled'].reset_index().head(n=5)
+
+
+def mean_reviews_score_per_state():
+
+    raw_df = get_raw_reviews_state_customer() 
+
+    raw_df_reviews_state_customer_orders = raw_df.groupby(['state_city', 'order_status']).size().to_frame()
+    raw_df_reviews_state_customer_ratings_mean = raw_df.groupby(['state_city', 'order_status'])['review_score'].mean().to_frame()
+
+    raw_df_reviews_state_customer_ratings_orders = pd.merge(raw_df_reviews_state_customer_orders, raw_df_reviews_state_customer_ratings_mean, on=['state_city','order_status'] )
+    df_reviews_state_customer_ratings_orders = raw_df_reviews_state_customer_ratings_orders.reset_index().sort_values(
+                    0, ascending=False).rename(
+                        columns={'state_city' : 'Ciudad (Estado)', 
+                                 'order_status' : 'Estado', 
+                                 0 : 'Cantidad Reviews', 
+                                 'review_score' : 'Puntuacion'})
+    
+    df_reviews_state_customer_ratings_orders['Puntuacion'] = round(df_reviews_state_customer_ratings_orders['Puntuacion'], 2)
+
+    return df_reviews_state_customer_ratings_orders
+
+def delivered_mean_reviews_score_per_state():
+
+    delivered_mean_reviews_score_per_state = mean_reviews_score_per_state()
+
+    return delivered_mean_reviews_score_per_state[delivered_mean_reviews_score_per_state['Estado'] == 'delivered'].reset_index().head(n=25)
+
+def canceled_mean_reviews_score_per_state():
+
+    canceled_mean_reviews_score_per_state = mean_reviews_score_per_state()
+
+    return canceled_mean_reviews_score_per_state[canceled_mean_reviews_score_per_state['Estado'] == 'canceled'].reset_index().head(n=5)
+
+
+
