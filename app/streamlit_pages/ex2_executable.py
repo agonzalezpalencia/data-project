@@ -9,7 +9,7 @@ def exercise2_metric_1():
 
     st.dataframe(ex2_df_orders)
 
-    st.subheader("Nº de pedidos por cada ciudad")
+    st.subheader("Ratio de pedidos por cliente en cada ciudad")
     st.scatter_chart(ex2_df_customers_orders, x="customer_city", x_label="Ciudades", y="Ratio de pedidos por cliente")
 
 
