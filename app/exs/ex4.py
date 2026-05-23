@@ -4,9 +4,9 @@ from seeders import load_data as data
 
 def get_raw_reviews_state_customer():
 
-    orders = data.orders()
-    customers = data.customers()
-    orders_reviews = data.order_review()
+    orders = data.orders().copy()
+    customers = data.customers().copy()
+    orders_reviews = data.order_review().copy()
 
     raw_df_reviews_state = pd.merge(orders, orders_reviews, on='order_id')
 
@@ -25,7 +25,7 @@ def get_raw_reviews_state_customer():
 
 def get_reviews_count_per_state():
 
-    raw_df = get_raw_reviews_state_customer() 
+    raw_df = get_raw_reviews_state_customer().copy() 
 
 
     df_reviews_state_customer = raw_df.groupby(['state_city', 'order_status']).size().to_frame().reset_index().rename(
@@ -38,23 +38,23 @@ def get_reviews_count_per_state():
     return df_reviews_state_customer
 
 
-def delivered_reviews_count_per_state():
+def delivered_reviews_count_per_state(number : int):
 
-    delivered_reviews_count_per_state = get_reviews_count_per_state()
+    delivered_reviews_count_per_state = get_reviews_count_per_state().copy()
     
-    return delivered_reviews_count_per_state[delivered_reviews_count_per_state['Estado'] == 'delivered'].reset_index().head(n=25)
+    return delivered_reviews_count_per_state[delivered_reviews_count_per_state['Estado'] == 'delivered'].reset_index().head(n=number)
 
 
-def canceled_reviews_count_per_state():
+def canceled_reviews_count_per_state(number : int):
 
-    canceled_reviews_count_per_state = get_reviews_count_per_state()
+    canceled_reviews_count_per_state = get_reviews_count_per_state().copy()
     
-    return canceled_reviews_count_per_state[canceled_reviews_count_per_state['Estado'] == 'canceled'].reset_index().head(n=5)
+    return canceled_reviews_count_per_state[canceled_reviews_count_per_state['Estado'] == 'canceled'].reset_index().head(n=number)
 
 
 def mean_reviews_score_per_state():
 
-    raw_df = get_raw_reviews_state_customer() 
+    raw_df = get_raw_reviews_state_customer().copy() 
 
     raw_df_reviews_state_customer_orders = raw_df.groupby(['state_city', 'order_status']).size().to_frame()
     raw_df_reviews_state_customer_ratings_mean = raw_df.groupby(['state_city', 'order_status'])['review_score'].mean().to_frame()
@@ -71,17 +71,17 @@ def mean_reviews_score_per_state():
 
     return df_reviews_state_customer_ratings_orders
 
-def delivered_mean_reviews_score_per_state():
+def delivered_mean_reviews_score_per_state(number : int):
 
-    delivered_mean_reviews_score_per_state = mean_reviews_score_per_state()
+    delivered_mean_reviews_score_per_state = mean_reviews_score_per_state().copy()
 
-    return delivered_mean_reviews_score_per_state[delivered_mean_reviews_score_per_state['Estado'] == 'delivered'].reset_index().head(n=25)
+    return delivered_mean_reviews_score_per_state[delivered_mean_reviews_score_per_state['Estado'] == 'delivered'].reset_index().head(n=number)
 
-def canceled_mean_reviews_score_per_state():
+def canceled_mean_reviews_score_per_state(number : int):
 
-    canceled_mean_reviews_score_per_state = mean_reviews_score_per_state()
+    canceled_mean_reviews_score_per_state = mean_reviews_score_per_state().copy()
 
-    return canceled_mean_reviews_score_per_state[canceled_mean_reviews_score_per_state['Estado'] == 'canceled'].reset_index().head(n=5)
+    return canceled_mean_reviews_score_per_state[canceled_mean_reviews_score_per_state['Estado'] == 'canceled'].reset_index().head(n=number)
 
 
 

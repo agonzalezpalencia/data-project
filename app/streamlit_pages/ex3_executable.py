@@ -13,22 +13,6 @@ def exercise3_metric_2():
 
     ex3_metric2 = ex3.late_orders_percentage()
     st.markdown(f'## Ejercicio 2\n - Porcentaje de pedidos retrasados respecto al total de pedidos de la ciudad')
-    # labels = ex3_metric2['Ciudad']
-    # sizes = ex3_metric2['Porcentaje']
-
-    #fig, ax = plt.subplots()
-    #fig.patch.set_facecolor('#0e1117')
-    #_, texts, autotexts =  ax.pie(sizes, autopct='%1.1f%%', shadow=True, startangle=90, labels=labels)
-
-    #for text in texts:
-        #text.set_color('White')
-        #text.set_fontsize(6)
-
-    #for autotext in autotexts:
-        #autotext.set_fontsize(6)
-
-    #ax.axis('equal')
-    #st.pyplot(fig)
     st.bar_chart(ex3_metric2, x='Ciudad (Estado)', y='Porcentaje')
 
 def exercise3_metric_3():
