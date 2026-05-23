@@ -3,7 +3,7 @@ import pandas as pd
 from seeders import load_data as data
 
 def obtain_carrier_customer_days():
-    time_days = obtain_late_orders_days()
+    time_days = obtain_late_orders_days().copy()
 
     time_days['order_delivered_carrier_date'] = pd.to_datetime(time_days['order_delivered_carrier_date'])
     time_days['order_purchase_timestamp'] = pd.to_datetime(time_days['order_purchase_timestamp'])
@@ -15,8 +15,8 @@ def obtain_carrier_customer_days():
 
 def obtain_late_orders_count():
 
-    time_days = obtain_late_orders_days()
-    orders_reviews = data.order_review()
+    time_days = obtain_late_orders_days().copy()
+    orders_reviews = data.order_review().copy()
 
     df_late_orders_reviews = pd.merge(time_days, orders_reviews, on='order_id', how='left')
 
@@ -27,13 +27,13 @@ def obtain_late_orders_count():
 
     df_late_orders_count_ranges = df_late_orders_reviews.groupby('range', observed=True).size().reset_index().rename(columns={ 0 : 'count'})
 
-    return df_late_orders_count_ranges
+    return df_late_orders_count_ranges.rename(columns={'range' : 'Rango', 'count' : 'Cantidad Pedidos'})
 
 
 def obtain_late_orders_rating():
 
-    time_days = obtain_late_orders_days()
-    orders_reviews = data.order_review()
+    time_days = obtain_late_orders_days().copy()
+    orders_reviews = data.order_review().copy()
 
     df_late_orders_reviews = pd.merge(time_days, orders_reviews, on='order_id', how='left')
 
@@ -44,7 +44,7 @@ def obtain_late_orders_rating():
 
     df_late_orders_rating_ranges = round(df_late_orders_reviews.groupby('range', observed=True)['review_score'].mean(), 2).reset_index()
 
-    return df_late_orders_rating_ranges
+    return df_late_orders_rating_ranges.rename(columns={'range' : 'Rango', 'review_score' : 'Puntuaciones'})
 
 
 def obtain_late_orders_per_city():
@@ -69,16 +69,16 @@ def obtain_late_orders_per_city():
     return df_late_orders_per_city
 
 
-def late_orders_per_city():
+def late_orders_per_city(number : int):
 
-    late_order_per_city = obtain_late_orders_per_city()
+    late_order_per_city = obtain_late_orders_per_city().copy()
 
     final_frame = late_order_per_city.groupby('state_city').size().sort_values(ascending=False).to_frame()
 
-    return final_frame.reset_index().rename(columns={'state_city' : 'Ciudad (Estado)', 0 : 'Cantidad Pedidos'}).head(n=25)
+    return final_frame.reset_index().rename(columns={'state_city' : 'Ciudad (Estado)', 0 : 'Cantidad Pedidos'}).head(n=number)
 
 
-def late_orders_percentage():
+def late_orders_percentage(number : int):
 
     orders = data.orders().copy()
     customers = data.customers().copy()
@@ -93,10 +93,12 @@ def late_orders_percentage():
     df_orders_percentage['percentage'] = round((df_orders_percentage['total_late_orders'] / 
                                       df_orders_percentage['total_orders']) * 100, 2)
 
-    return df_orders_percentage.sort_values(by='total_late_orders', ascending=[False]).reset_index().rename(columns={'state_city' : 'Ciudad (Estado)', 'percentage' : 'Porcentaje'}).head(n=25)
+    return df_orders_percentage.sort_values(by='total_late_orders', ascending=[False]).reset_index().rename(columns={'state_city' : 'Ciudad (Estado)', 'percentage' : 'Porcentaje'}).head(n=number)
 
 def obtain_late_orders_days():
+    
     df_time_days = obtain_late_orders_per_city().copy()
+
     df_time_days['order_delivered_customer_date'] = pd.to_datetime(df_time_days['order_delivered_customer_date'])
     df_time_days['order_estimated_delivery_date'] = pd.to_datetime(df_time_days['order_estimated_delivery_date'])
 
@@ -106,8 +108,8 @@ def obtain_late_orders_days():
 
 
 
-def late_orders_days_mean():
+def late_orders_days_mean(number : int):
 
-    df_mean_time_days = obtain_late_orders_days()
+    df_mean_time_days = obtain_late_orders_days().copy()
 
-    return df_mean_time_days.groupby('state_city')['late_days'].mean().sort_values(ascending=False).to_frame().reset_index().rename(columns={'state_city' : 'Ciudad (Estado)', 'late_days' : 'Media Dias de Retraso'}).head(n=25)
+    return df_mean_time_days.groupby('state_city')['late_days'].mean().sort_values(ascending=False).to_frame().reset_index().rename(columns={'state_city' : 'Ciudad (Estado)', 'late_days' : 'Media Dias de Retraso'}).head(n=number)

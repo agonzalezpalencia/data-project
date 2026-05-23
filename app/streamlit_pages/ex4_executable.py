@@ -9,7 +9,7 @@ def exercise4_metric_1():
     ex4_1_metric_1 = ex4.delivered_reviews_count_per_state(n_metric1)
     st.bar_chart(ex4_1_metric_1, x='Ciudad (Estado)', y='Cantidad Reviews')
     
-    n_metric2 = st.number_input('Número de Ciudades: ', min_value=1, max_value=100, value=25, key='n_canceled')
+    n_metric2 = st.number_input('Número de Ciudades: ', min_value=1, max_value=100, value=3, key='n_canceled')
     ex4_1_metric_2 = ex4.canceled_reviews_count_per_state(n_metric2)
     
     st.markdown('- Número de reviews por estado (Estado de Ciudad y Estado de Pedido "canceled")')
@@ -26,7 +26,7 @@ def exercise4_metric_2():
     ex4_2_metric_1 = ex4.delivered_mean_reviews_score_per_state(n_metric1)
     st.bar_chart(ex4_2_metric_1, x='Ciudad (Estado)', y='Puntuacion')
     
-    n_metric2 = st.number_input('Número de Ciudades: ', min_value=1, max_value=100, value=25, key='n_canceled_2')
+    n_metric2 = st.number_input('Número de Ciudades: ', min_value=1, max_value=100, value=3, key='n_canceled_2')
     ex4_2_metric_2 = ex4.canceled_mean_reviews_score_per_state(n_metric2)
 
     st.markdown(f'- Score medio de las reviews en cada estado (Estado de Ciudad y Estado de Pedido "canceled")')
