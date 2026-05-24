@@ -3,31 +3,49 @@ import pandas as pd
 import streamlit as st
 import seeders.load_data as data
 
-def obtain_number_customers_per_city():
+# Método para filtrar la fecha máxima y mínima del Dataset de order
+def get_max_min_date():
 
-    customers = data.customers().copy()
+    # Creamos una copia del Dataframe para no modificar el Dataframe origiinal guardado en caché
     orders = data.orders().copy()
 
-    orders.loc[:, "order_purchase_timestamp"] = pd.to_datetime(orders["order_purchase_timestamp"])
-
+    # Filtramos la fecha mínima y máxima
     min_date = orders["order_purchase_timestamp"].min()
     max_date = orders["order_purchase_timestamp"].max()
 
-    start_date = st.datetime_input("Selecciona la fecha de inicio:", value= min_date, min_value=min_date, max_value=max_date, key="start_date")
-    start_date = pd.to_datetime(start_date)
+    return max_date, min_date
 
+# Método para obtener el número de clientes filtrado por estado y ciudad del cliente
+def obtain_number_customers_per_city(number : int, start_date, end_date):
 
-    end_date = st.datetime_input("Selecciona la fecha de fin:", value=max_date, min_value=min_date, max_value=max_date, key="end_date")
-    end_date = pd.to_datetime(end_date)
+    # Creamos instancias temporales de los Dataframes, para no modificar los originales
+    customers = data.customers().copy()
+    orders = data.orders().copy()
 
-    df_filtered = orders[(orders["order_purchase_timestamp"] >= start_date) & (orders["order_purchase_timestamp"] <= end_date)]
- 
+    # Cambiamos el tipo de order_pruchase_timestamp para poder operar con él y decidir el rango de fechas dinámico desde el dashboard de Streamlit
+    orders.loc[:, "order_purchase_timestamp"] = pd.to_datetime(orders["order_purchase_timestamp"])
 
+    # Definimos fecha de inicio y de fin
+    st_date = pd.to_datetime(start_date)
+    ed_date = pd.to_datetime(end_date)
+
+    # Filtramos los pedidos por las fechas
+    df_filtered = orders[(orders["order_purchase_timestamp"] >= st_date) & (orders["order_purchase_timestamp"] <= ed_date)]
+
+    # Hacemos un join con el DataFrame de clientes por el 'customer_id', para poder acceder a las ciudades y a los estados
     df_filtered_orders = pd.merge(customers, df_filtered, on="customer_id")
 
-    df_filtered_orders = df_filtered_orders.groupby(["customer_state", "customer_city"]).size().sort_values(ascending=False).reset_index(name="Nº Clientes por ciudad").rename(columns={"customer_state": "Estado", "customer_city": "Ciudad"})
+    # Normalizamos el nombre de la ciudad
+    df_filtered_orders['customer_city'] = df_filtered_orders['customer_city'].str.capitalize()
 
+    # Normalizamos los datos y realizamos el filtrado para quedarnos con los datos que nos interesan mostrar, agrupamos por el estado y ciudad y obtenemos
+    # los clientes unicos, ordenamos de manera descendente, reseteamos índices para poder acceder a los datos más fácilmente y renombramos las columnas que necesitamos
+    df_filtered_orders = df_filtered_orders.groupby(["customer_state", 
+                                                     "customer_city"])['customer_unique_id'].nunique().sort_values(ascending=False).reset_index(
+                                                         name="Nº Clientes por ciudad").rename(
+                                                             columns={"customer_state": "Estado", 
+                                                                      "customer_city": "Ciudad"})
 
-    return df_filtered_orders.head(n=25)
+    return df_filtered_orders.head(n=number) # Devolvemos el DataFrame según el número que se nos pase en streamlit
 
 
