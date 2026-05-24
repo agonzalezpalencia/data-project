@@ -87,6 +87,46 @@ Se ha seguido un flujo **`dev` → `main`** mediante Pull Requests:
 
 ---
 
+## Cómo ejecutar el proyecto
+
+### 1. Crear el entorno virtual e instalar dependencias
+
+Desde la raíz del proyecto, ejecuta los siguientes comandos:
+
+```bash
+python -m venv .venv
+```
+
+Activa el entorno virtual:
+
+- **Windows:**
+```bash
+.venv\Scripts\activate
+```
+- **Linux/Mac:**
+```bash
+source .venv/bin/activate
+```
+
+Instala las dependencias:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Ejecutar el dashboard
+
+Una vez instaladas las dependencias, navega a la carpeta `app` y lanza Streamlit:
+
+```bash
+cd app
+streamlit run main.py
+```
+
+La aplicación estará disponible en `http://localhost:8501`.
+
+---
+
 ## Autores
 
 Proyecto creado por **Pedro Arriero Domec** y **Abel González Palencia**.
