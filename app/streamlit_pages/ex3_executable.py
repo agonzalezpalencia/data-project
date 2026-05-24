@@ -104,7 +104,7 @@ def self_diagnosis():
 
         # Mostramos ambas medias para validar el autodiagnóstico
         st.markdown(f'- La media de dias que han tardado los productos en llegar al transportista ha sido de : {purchase_carrier}')
-        st.markdown(f'- La media de dias que ha tardado el transportidta en repartir el paquete al cliente ha sido de: {carrier_customer}')
+        st.markdown(f'- La media de dias que ha tardado el transportista en repartir el paquete al cliente ha sido de: {carrier_customer}')
         
         # Según el valor que predomine, mostramos un mensaje u otro, en este caso predomina 'carrier_customer', por lo que el motivo principal de los retrasos en los pedidos
         # es el tiempo que tarda el repartidor en enviar el paquete al cliente
