@@ -2,10 +2,12 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import os
+
+# Utilizamos el directorio base desde el que se llama al archivo para que tanto en local como en producción, elija correctamente la ruta de acceso al archivo load_data.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Archivo de Python que se encarga de proveer los Dataframes a la capa de lógica de nuestro proyecto, usamos el decorador de 'st.cache_data' para que durante
-# el flujo del ejercicio solo se carguen los Dataframes una vez en caché y se reutilicen durante todo el flujo del proyecto, optimizando la gestión de recursos
+# el flujo del proyecto solo se carguen los Dataframes una vez en caché y se reutilicen durante todo el flujo del proyecto, optimizando la gestión de recursos
 # al máximo posible
 
 @st.cache_data

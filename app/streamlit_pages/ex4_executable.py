@@ -33,6 +33,7 @@ def exercise4_metric_1():
     # Mostramos las columnas
     return columns
 
+# Método que pinta en Streamlit la segunda métrica del ejercicio 4
 def exercise4_metric_2():
 
     # Mostramos información al usuario sobre la métrica para que tenga un contexto

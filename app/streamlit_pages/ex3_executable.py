@@ -109,13 +109,11 @@ def self_diagnosis():
         # Según el valor que predomine, mostramos un mensaje u otro, en este caso predomina 'carrier_customer', por lo que el motivo principal de los retrasos en los pedidos
         # es el tiempo que tarda el repartidor en enviar el paquete al cliente
         if (purchase_carrier > carrier_customer):
-            st.error('- Podemos decidir gracias a estos datos que la causa del problema viene directamente de la relación existente ' \
-            'entre el vendedor del producto y la llegada a la paquetera, al tener una media mas alta que el reparto de los productos ' \
-            'al cliente por parte del repartidor, podemos saber a ciencia cierta que es la causa más posible del problema.')
+            st.error('- Podemos decidir gracias a estos datos que la causa del problema viene directamente de **la relación existente ' \
+            'entre el vendedor del producto y la llegada a la paquetera**.')
         else:
-            st.error('- Podemos decidir gracias a estos datos que la causa del problema viene directamente de la relación existente ' \
-            'entre el repartidor y la llegada del producto al cliente por parte del repartidor, al tener una media mas alta que la llegada ' \
-            'de los productos desde el vendedor al repartidor, podemos saber a ciencia cierta que es la causa más posible del problema.')
+            st.error('- Podemos decidir gracias a estos datos que la causa del problema viene directamente de **la relación existente ' \
+            'entre el repartidor y la llegada del producto al cliente por parte del repartidor**.')
 
     # Construimos el título del autodiagnóstico y mostramos nuestras métricas
     st.markdown(f'## Autodiágnostico con Análisis exploratorio por Franjas de los Pedidos retrasados')
