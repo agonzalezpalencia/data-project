@@ -29,10 +29,10 @@ Se define un único método:
 
 ### Capa gráfica — `streamlit_pages/pers_metric_1_executable.py`
 
-Se construye el dashboard con los siguientes componentes:
+Se construye el dashboard con dos representaciones del mismo dato, cada una con su propio input numérico y su propia función:
 
-- Un input numérico para controlar cuántas categorías mostrar, con valor por defecto de 15.
-- Un diagrama circular construido con `matplotlib`, con las siguientes configuraciones:
+- `pers_metric_1_1()`: Un input numérico para controlar cuántas categorías mostrar, con valor por defecto de 15. Se representa con un **gráfico de barras** nativo de Streamlit (`st.bar_chart`), con la categoría en el eje X y el porcentaje en el eje Y.
+- `pers_metric_1_2()`: Un input numérico independiente para controlar cuántas categorías mostrar, con valor por defecto de 15 y un diagrama circular construido con `matplotlib`, con las siguientes configuraciones:
   - Fondo oscuro para que encaje con el tema por defecto de Streamlit.
   - Etiquetas de categoría en color blanco y tamaño de fuente reducido para evitar solapamientos.
   - Porcentajes con un decimal en cada porción del gráfico, con tamaño de fuente reducido
@@ -43,9 +43,11 @@ Se construye el dashboard con los siguientes componentes:
 
 ## Toma de decisiones en base al gráfico elegido
 
-Se eligió el **diagrama circular** (también llamado diagrama de tarta o pie chart) porque el dato que se quiere mostrar es una distribución porcentual de partes sobre un todo. Este tipo de gráfico es especialmente adecuado cuando el objetivo es visualizar qué proporción ocupa cada categoría dentro del conjunto total.
+Esta métrica se representa con dos gráficos distintos que se complementan entre sí: un **gráfico de barras** y un **diagrama circular**.
 
-El gráfico de barras habría sido una alternativa válida y posiblemente más fácil de leer cuando hay muchas categorías, pero el diagrama circular aporta una idea más intuitiva y amigable sobre la distribución relativa: de un vistazo se puede ver si hay una categoría que domina claramente el mercado o si la distribución está más repartida, gracias a sus colores facilita mucho el análisis de estos datos.
+El **diagrama circular** (también llamado diagrama de tarta o pie chart) que creemos que es el más adecuado para representar esta métrica, porque el dato que se quiere mostrar es una distribución porcentual de partes sobre el total. Este tipo de gráfico es especialmente adecuado cuando el objetivo es visualizar qué proporción ocupa cada categoría dentro del conjunto total.
+
+El **gráfico de barras**, que permite comparar de forma directa el porcentaje de cada categoría de manera ordenada, facilitando la lectura cuando hay muchas categorías. Esta opción se ha contemplado debido a que el diagrama circular, solapa las categorías cuando existen muchas en el mismo diagrama, en el gráfico de barras podemos introducir más categorías que en el diagrama circular, mejorando así la visualización de muchas categorías
 
 La reducción del tamaño de fuente de las etiquetas fue necesaria para que los nombres de las categorías no se solapasen entre sí. El fondo oscuro se configuró para que el gráfico encaje visualmente con la interfaz de Streamlit y parezca un gráfico que realmente ha generado Streamlit y no Matplotlib
 
